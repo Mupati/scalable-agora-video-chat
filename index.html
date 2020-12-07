@@ -12,9 +12,25 @@
       content="HTML, CSS, JavaScript, Live Broadcasting, Video, Agora"
     />
     <meta name="author" content="Kofi Obrasi Ocran" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.3.0.js"></script>
     <title>Build A Scalable Video Chat Application With Agora</title>
-
-    <script src="./index.js"></script>
   </head>
-  <body></body>
+  <body>
+    <div id="app">
+      <main>
+        <div id="video-container">
+          <div ref="localVideo" id="local-video"></div>
+          <div ref="remoteVideo" id="remote-video"></div>
+
+          <div id="action-btns">
+            <button @click="leaveChannel">Cancel</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="./index.js"></script>
+  </body>
 </html>
