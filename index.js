@@ -21,9 +21,8 @@ let app = new Vue({
           console.log("AgoraRTC client init failed", err);
         }
       );
-
       this.client.join(
-        "006396e04646ef344e5a6c69304f56f59c0IAB1UxKZ6t9v8exa0PtrA0FO6CuwkH+moFN67mMJOEpe5HavCmIAAAAAEAAWal0mdajOXwEAAQB0qM5f",
+        "006396e04646ef344e5a6c69304f56f59c0IABSNxfmVfONa1hXfY4aMOhx0hu4zq4kmPqEgsB+jIF3UnavCmIAAAAAEADtPGiJKx7RXwEAAQAqHtFf",
         "video_chat",
         null,
         (uid) => {
