@@ -1,11 +1,16 @@
 let app = new Vue({
   el: "#app",
   data: {
-    message: "Hello Vue!",
+    isLoggedIn: false,
     client: null,
+    users: [],
+    name: null,
+    room: null,
+    roomToken: null,
+    isError: false,
   },
 
-  mounted() {
+  created() {
     this.initializeAgora();
   },
 
@@ -19,18 +24,6 @@ let app = new Vue({
         },
         function (err) {
           console.log("AgoraRTC client init failed", err);
-        }
-      );
-      this.client.join(
-        "006396e04646ef344e5a6c69304f56f59c0IABSNxfmVfONa1hXfY4aMOhx0hu4zq4kmPqEgsB+jIF3UnavCmIAAAAAEADtPGiJKx7RXwEAAQAqHtFf",
-        "video_chat",
-        null,
-        (uid) => {
-          console.log("User " + uid + " join channel successfully");
-          this.createLocalStream();
-        },
-        function (err) {
-          console.log("Join channel failed", err);
         }
       );
 
@@ -60,9 +53,46 @@ let app = new Vue({
         stream.close();
       });
 
-      this.client.on("peer", ({ stream }) => {
-        stream.close();
+      this.client.on("peer-online", (evt) => {
+        console.log(evt);
+        console.log("peer-online", evt.uid);
+        this.users.push(evt.uid);
+        console.log(this.users);
       });
+
+      // this.client.on("peer", ({ stream }) => {
+      //   stream.close();
+      // });
+
+      this.client.on("peer-leave", (evt) => {
+        var uid = evt.uid;
+        var reason = evt.reason;
+        console.log("remote user left ", uid, "reason: ", reason);
+      });
+    },
+
+    joinRoom() {
+      // "006396e04646ef344e5a6c69304f56f59c0IAAmXiJ4DuUsWhLCHgQU/HuK6tGgC0/r0VqzAIqX1q7Er3avCmIAAAAAEABC7KpC/YHWXwEAAQD9gdZf",
+      // "video_chat",
+      // this.isLoggedIn = true;
+
+      // if true return;
+      console.log("Join Room");
+      this.client.join(
+        this.roomToken,
+        this.room,
+        null,
+        (uid) => {
+          console.log("User " + uid + " join channel successfully");
+          console.log(uid);
+          this.isLoggedIn = true;
+          this.createLocalStream();
+        },
+        (err) => {
+          console.log("Join channel failed", err);
+          this.setErrorMessage();
+        }
+      );
     },
 
     createLocalStream() {
@@ -96,6 +126,13 @@ let app = new Vue({
           console.log("Leave channel failed");
         }
       );
+    },
+
+    setErrorMessage() {
+      this.isError = true;
+      setTimeout(() => {
+        this.isError = false;
+      }, 2000);
     },
   },
 });
