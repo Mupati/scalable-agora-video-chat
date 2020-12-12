@@ -32,10 +32,6 @@ let app = new Vue({
       this.client.on("stream-published", function (evt) {
         console.log("Publish local stream successfully");
         console.log(evt);
-
-        this.client.subscribe(evt.stream, function (err) {
-          console.log("Subscribe stream failed", err);
-        });
       });
 
       //subscribe remote stream
@@ -46,10 +42,10 @@ let app = new Vue({
         });
       });
 
-      this.client.on("stream-subscribed", ({ stream: remoteStream }) => {
+      this.client.on("stream-subscribed", (evt) => {
         // Attach remote stream to the remote-video div
-        remoteStream.play("remote-video");
-        this.client.publish(remoteStream);
+        evt.stream.play("remote-video");
+        this.client.publish(evt.stream);
       });
 
       this.client.on("stream-removed", ({ stream }) => {
