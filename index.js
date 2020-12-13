@@ -26,7 +26,34 @@ let app = new Vue({
           console.log("AgoraRTC client init failed", err);
         }
       );
+    },
 
+    joinRoom() {
+      // "006396e04646ef344e5a6c69304f56f59c0IAAmXiJ4DuUsWhLCHgQU/HuK6tGgC0/r0VqzAIqX1q7Er3avCmIAAAAAEABC7KpC/YHWXwEAAQD9gdZf",
+      // "video_chat",
+      // this.isLoggedIn = true;
+
+      // if true return;
+      console.log("Join Room");
+      this.client.join(
+        this.roomToken,
+        this.room,
+        null,
+        (uid) => {
+          console.log("User " + uid + " join channel successfully");
+          console.log(uid);
+          this.isLoggedIn = true;
+          this.createLocalStream();
+          this.initializedAgoraListeners();
+        },
+        (err) => {
+          console.log("Join channel failed", err);
+          this.setErrorMessage();
+        }
+      );
+    },
+
+    initializedAgoraListeners() {
       //   Register event listeners
 
       this.client.on("stream-published", function (evt) {
@@ -65,34 +92,11 @@ let app = new Vue({
       // });
 
       this.client.on("peer-leave", (evt) => {
+        console.log(evt);
         var uid = evt.uid;
         var reason = evt.reason;
         console.log("remote user left ", uid, "reason: ", reason);
       });
-    },
-
-    joinRoom() {
-      // "006396e04646ef344e5a6c69304f56f59c0IAAmXiJ4DuUsWhLCHgQU/HuK6tGgC0/r0VqzAIqX1q7Er3avCmIAAAAAEABC7KpC/YHWXwEAAQD9gdZf",
-      // "video_chat",
-      // this.isLoggedIn = true;
-
-      // if true return;
-      console.log("Join Room");
-      this.client.join(
-        this.roomToken,
-        this.room,
-        null,
-        (uid) => {
-          console.log("User " + uid + " join channel successfully");
-          console.log(uid);
-          this.isLoggedIn = true;
-          this.createLocalStream();
-        },
-        (err) => {
-          console.log("Join channel failed", err);
-          this.setErrorMessage();
-        }
-      );
     },
 
     createLocalStream() {
