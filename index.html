@@ -77,9 +77,28 @@
         <section id="video-container" v-else>
           <div ref="localVideo" id="local-video"></div>
           <div ref="remoteVideo" id="remote-video"></div>
-
+          <!-- 
           <div id="action-btns">
             <button @click="leaveChannel">Cancel</button>
+          </div> -->
+          <div class="action-btns">
+            <button
+              type="button"
+              class="btn btn-info"
+              @click="handleAudioToggle"
+            >
+              {{ onAudio ? "Mute" : "Unmute" }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary mx-4"
+              @click="handleVideoToggle"
+            >
+              {{ onVideo ? "HideVideo" : "ShowVideo" }}
+            </button>
+            <button type="button" class="btn btn-danger" @click="endCall">
+              EndCall
+            </button>
           </div>
         </section>
       </main>

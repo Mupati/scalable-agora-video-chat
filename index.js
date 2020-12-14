@@ -3,11 +3,13 @@ let app = new Vue({
   data: {
     isLoggedIn: false,
     client: null,
-    users: [],
     name: null,
     room: null,
     roomToken: null,
     isError: false,
+    localStream: null,
+    onAudio: true,
+    onVideo: true,
   },
 
   created() {
@@ -41,7 +43,6 @@ let app = new Vue({
         null,
         (uid) => {
           console.log("User " + uid + " join channel successfully");
-          console.log(uid);
           this.isLoggedIn = true;
           this.createLocalStream();
           this.initializedAgoraListeners();
@@ -97,21 +98,27 @@ let app = new Vue({
         var reason = evt.reason;
         console.log("remote user left ", uid, "reason: ", reason);
       });
+
+      this.client.on("stream-unpublished", (evt) => {
+        console.log(evt);
+      });
     },
 
     createLocalStream() {
-      let localStream = AgoraRTC.createStream({
+      this.localStream = AgoraRTC.createStream({
         audio: true,
         video: true,
       });
 
+      console.log(this.localStream);
+
       // Initialize the local stream
-      localStream.init(
+      this.localStream.init(
         () => {
           // Play the local stream
-          localStream.play("local-video");
+          this.localStream.play("local-video");
           // Publish the local stream
-          this.client.publish(localStream, (err) => {
+          this.client.publish(this.localStream, (err) => {
             console.log("publish local stream", err);
           });
         },
@@ -121,7 +128,9 @@ let app = new Vue({
       );
     },
 
-    leaveChannel() {
+    endCall() {
+      console.log(this.localStream);
+      this.localStream.close();
       this.client.leave(
         () => {
           console.log("Leave channel successfully");
@@ -138,6 +147,28 @@ let app = new Vue({
       setTimeout(() => {
         this.isError = false;
       }, 2000);
+    },
+
+    handleAudioToggle() {
+      console.log(this.localStream.audio);
+      if (this.onAudio) {
+        this.localStream.disableAudio();
+        this.onAudio = false;
+      } else {
+        this.localStream.enableAudio();
+        this.onAudio = true;
+      }
+    },
+
+    handleVideoToggle() {
+      console.log(this.localStream.video);
+      if (this.onVideo) {
+        this.localStream.disableVideo();
+        this.onVideo = false;
+      } else {
+        this.localStream.enableVideo();
+        this.onVideo = true;
+      }
     },
   },
 });
