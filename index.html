@@ -26,6 +26,13 @@
   <body>
     <div id="app">
       <main>
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              <img src="./agora-logo.png" alt="Agora Logo" class="img-fuild" />
+            </div>
+          </div>
+        </div>
         <section id="login-form" v-if="!isLoggedIn">
           <div class="container">
             <div class="row">
@@ -77,10 +84,7 @@
         <section id="video-container" v-else>
           <div ref="localVideo" id="local-video"></div>
           <div ref="remoteVideo" id="remote-video"></div>
-          <!-- 
-          <div id="action-btns">
-            <button @click="leaveChannel">Cancel</button>
-          </div> -->
+
           <div class="action-btns">
             <button
               type="button"
