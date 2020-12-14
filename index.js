@@ -5,11 +5,11 @@ let app = new Vue({
     client: null,
     name: null,
     room: null,
-    roomToken: null,
+    password: null,
     isError: false,
     localStream: null,
-    onAudio: true,
-    onVideo: true,
+    mutedAudio: false,
+    mutedVideo: false,
   },
 
   created() {
@@ -31,14 +31,9 @@ let app = new Vue({
     },
 
     joinRoom() {
-      // "006396e04646ef344e5a6c69304f56f59c0IAAmXiJ4DuUsWhLCHgQU/HuK6tGgC0/r0VqzAIqX1q7Er3avCmIAAAAAEABC7KpC/YHWXwEAAQD9gdZf",
-      // "video_chat",
-      // this.isLoggedIn = true;
-
-      // if true return;
       console.log("Join Room");
       this.client.join(
-        this.roomToken,
+        this.password,
         this.room,
         null,
         (uid) => {
@@ -56,7 +51,6 @@ let app = new Vue({
 
     initializedAgoraListeners() {
       //   Register event listeners
-
       this.client.on("stream-published", function (evt) {
         console.log("Publish local stream successfully");
         console.log(evt);
@@ -82,18 +76,10 @@ let app = new Vue({
       });
 
       this.client.on("peer-online", (evt) => {
-        console.log(evt);
         console.log("peer-online", evt.uid);
-        this.users.push(evt.uid);
-        console.log(this.users);
       });
 
-      // this.client.on("peer", ({ stream }) => {
-      //   stream.close();
-      // });
-
       this.client.on("peer-leave", (evt) => {
-        console.log(evt);
         var uid = evt.uid;
         var reason = evt.reason;
         console.log("remote user left ", uid, "reason: ", reason);
@@ -109,8 +95,6 @@ let app = new Vue({
         audio: true,
         video: true,
       });
-
-      console.log(this.localStream);
 
       // Initialize the local stream
       this.localStream.init(
@@ -129,7 +113,6 @@ let app = new Vue({
     },
 
     endCall() {
-      console.log(this.localStream);
       this.localStream.close();
       this.client.leave(
         () => {
@@ -150,24 +133,22 @@ let app = new Vue({
     },
 
     handleAudioToggle() {
-      console.log(this.localStream.audio);
-      if (this.onAudio) {
-        this.localStream.disableAudio();
-        this.onAudio = false;
-      } else {
+      if (this.mutedAudio) {
         this.localStream.enableAudio();
-        this.onAudio = true;
+        this.mutedAudio = false;
+      } else {
+        this.localStream.disableAudio();
+        this.mutedAudio = true;
       }
     },
 
     handleVideoToggle() {
-      console.log(this.localStream.video);
-      if (this.onVideo) {
-        this.localStream.disableVideo();
-        this.onVideo = false;
-      } else {
+      if (this.mutedVideo) {
         this.localStream.enableVideo();
-        this.onVideo = true;
+        this.mutedVideo = false;
+      } else {
+        this.localStream.disableVideo();
+        this.mutedVideo = true;
       }
     },
   },

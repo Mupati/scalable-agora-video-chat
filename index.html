@@ -47,11 +47,11 @@
                     <input type="text" class="form-control" v-model="room" />
                   </div>
                   <div class="mb-3">
-                    <label class="form-label">Agora Token</label>
+                    <label class="form-label">Password</label>
                     <input
-                      type="text"
+                      type="password"
                       class="form-control"
-                      v-model="roomToken"
+                      v-model="password"
                     />
                   </div>
                   <div
@@ -59,7 +59,7 @@
                     role="alert"
                     v-if="isError"
                   >
-                    Invalid room name or token
+                    Invalid room name or password
                     <button
                       type="button"
                       class="btn-close"
@@ -71,7 +71,7 @@
                     <button
                       class="btn btn-primary text-center"
                       @click.prevent="joinRoom"
-                      :disabled="room === null || roomToken === null"
+                      :disabled="room === null || password === null"
                     >
                       Join Call
                     </button>
@@ -82,8 +82,8 @@
           </div>
         </section>
         <section id="video-container" v-else>
-          <div ref="localVideo" id="local-video"></div>
-          <div ref="remoteVideo" id="remote-video"></div>
+          <div id="local-video"></div>
+          <div id="remote-video"></div>
 
           <div class="action-btns">
             <button
@@ -91,14 +91,14 @@
               class="btn btn-info"
               @click="handleAudioToggle"
             >
-              {{ onAudio ? "Mute" : "Unmute" }}
+              {{ mutedAudio ? "Unmute" : "Mute" }}
             </button>
             <button
               type="button"
               class="btn btn-primary mx-4"
               @click="handleVideoToggle"
             >
-              {{ onVideo ? "HideVideo" : "ShowVideo" }}
+              {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
             </button>
             <button type="button" class="btn btn-danger" @click="endCall">
               EndCall
