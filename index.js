@@ -3,37 +3,39 @@ let app = new Vue({
   data: {
     isLoggedIn: false,
     client: null,
-    name: null,
+    appID: null,
     room: null,
-    password: null,
+    token: null,
     isError: false,
     localStream: null,
+    remoteStream: null,
     mutedAudio: false,
     mutedVideo: false,
   },
 
-  created() {
-    this.initializeAgora();
-  },
-
   methods: {
+    joinRoom() {
+      this.initializeAgora();
+    },
+
     initializeAgora() {
       this.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
       this.client.init(
-        "396e04646ef344e5a6c69304f56f59c0",
-        function () {
+        this.appID, // Your APP ID from the agora dashboard.
+        () => {
           console.log("AgoraRTC client initialized");
+          this.joinChannel();
         },
-        function (err) {
+        (err) => {
           console.log("AgoraRTC client init failed", err);
         }
       );
     },
 
-    joinRoom() {
+    joinChannel() {
       console.log("Join Room");
       this.client.join(
-        this.password,
+        this.token,
         this.room,
         null,
         (uid) => {
@@ -66,6 +68,7 @@ let app = new Vue({
 
       this.client.on("stream-subscribed", (evt) => {
         // Attach remote stream to the remote-video div
+        this.remoteStream = evt.stream;
         evt.stream.play("remote-video");
         this.client.publish(evt.stream);
       });
@@ -113,7 +116,22 @@ let app = new Vue({
     },
 
     endCall() {
+      this.localStream.stop();
       this.localStream.close();
+
+      // unpublish local stream
+      this.client.unpublish(this.localStream, function (err) {
+        console.log(err);
+        //……
+      });
+
+      // unsubscribe from remote stream
+      this.client.unsubscribe(this.remoteStream, function (err) {
+        console.log(err);
+        //……
+      });
+
+      // Leave the channel
       this.client.leave(
         () => {
           console.log("Leave channel successfully");
