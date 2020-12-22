@@ -74,7 +74,7 @@ let app = new Vue({
       });
 
       this.client.on("stream-removed", ({ stream }) => {
-        console.log(String(stream.getId()));
+        // console.log(String(stream.getId()));
         stream.close();
       });
 
@@ -125,11 +125,14 @@ let app = new Vue({
         //……
       });
 
-      // unsubscribe from remote stream
-      this.client.unsubscribe(this.remoteStream, function (err) {
-        console.log(err);
-        //……
-      });
+      // unsubscribe from remote stream if there is a remote user
+      // on  the channel
+      if (this.remoteStream) {
+        this.client.unsubscribe(this.remoteStream, function (err) {
+          console.log(err);
+          //……
+        });
+      }
 
       // Leave the channel
       this.client.leave(
