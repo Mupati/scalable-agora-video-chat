@@ -33,7 +33,7 @@ let app = new Vue({
     },
 
     joinChannel() {
-      console.log("Join Room");
+      console.log("Join Channel");
       this.client.join(
         this.token,
         this.room,
