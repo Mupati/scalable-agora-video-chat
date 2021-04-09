@@ -19,7 +19,7 @@ main {
   background-color: #fff;
 }
 
-#local-video {
+/* #local-video {
   width: 30%;
   height: 30%;
   position: absolute;
@@ -29,7 +29,7 @@ main {
   border-radius: 6px;
   z-index: 2;
   cursor: pointer;
-}
+} */
 
 #remote-video {
   width: 100%;
@@ -58,4 +58,20 @@ main {
 
 #login-form {
   margin-top: 100px;
+}
+
+/* Multiple users */
+#callersList {
+  height: 100vh;
+  margin: 10px 2rem;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  background-color: #2196f3;
+  padding: 10px;
+}
+
+.grid-item {
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  text-align: center;
+  height: 200px;
 }

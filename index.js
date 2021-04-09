@@ -11,6 +11,7 @@ let app = new Vue({
     remoteStream: null,
     mutedAudio: false,
     mutedVideo: false,
+    remoteStreamIds: [],
   },
 
   methods: {
@@ -69,8 +70,17 @@ let app = new Vue({
       this.client.on("stream-subscribed", (evt) => {
         // Attach remote stream to the remote-video div
         this.remoteStream = evt.stream;
-        evt.stream.play("remote-video");
-        this.client.publish(evt.stream);
+        let streamId = evt.stream.getId();
+
+        // store ids of remote stream
+        this.remoteStreamIds.push(streamId);
+
+        // simulate a slight delay to make sure dom element is present.
+        setTimeout(() => {
+          console.log("just delaying");
+          evt.stream.play("agora_remote_" + streamId);
+          this.client.publish(evt.stream);
+        }, 2000);
       });
 
       this.client.on("stream-removed", ({ stream }) => {

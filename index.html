@@ -20,7 +20,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="./styles.css" />
-    <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.3.0.js"></script>
+    <script src="https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.2.1.js"></script>
     <title>Build A Scalable Video Chat Application With Agora</title>
   </head>
   <body>
@@ -77,7 +77,7 @@
             </div>
           </div>
         </section>
-        <section id="video-container" v-else>
+        <!-- <section id="video-container" v-else>
           <div id="local-video"></div>
           <div id="remote-video"></div>
 
@@ -100,6 +100,15 @@
               EndCall
             </button>
           </div>
+        </section> -->
+
+        <section ref="remoteVidList" id="callersList" v-if="isLoggedIn">
+          <div id="local-video" class="grid-item"></div>
+          <div
+            v-for="remoteId in remoteStreamIds"
+            :id="'agora_remote_'+remoteId"
+            class="grid-item"
+          ></div>
         </section>
       </main>
     </div>
