@@ -14,6 +14,11 @@ let app = new Vue({
     remoteStreamIds: [],
   },
 
+  mounted() {
+    AgoraRTC.Logger.setLogLevel(4);
+    AgoraRTC.checkSystemRequirements();
+  },
+
   methods: {
     joinRoom() {
       this.initializeAgora();
