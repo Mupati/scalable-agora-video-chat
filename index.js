@@ -46,7 +46,20 @@ let app = new Vue({
         null,
         (uid) => {
           console.log("User " + uid + " join channel successfully");
+
+          // enable dual stream
+          this.client.enableDualStream(
+            () => console.log("Enable dual stream success!"),
+            (e) => console.log(e)
+          );
+
           this.isLoggedIn = true;
+          this.client.setLowStreamParameter({
+            bitrate: 500,
+            framerate: 15,
+            height: 480,
+            width: 640,
+          });
           this.createLocalStream();
           this.initializedAgoraListeners();
         },
@@ -67,6 +80,7 @@ let app = new Vue({
       //subscribe remote stream
       this.client.on("stream-added", ({ stream }) => {
         console.log("New stream added: " + stream.getId());
+        this.client.setRemoteVideoStreamType(stream, 1);
         this.client.subscribe(stream, function (err) {
           console.log("Subscribe stream failed", err);
         });
@@ -90,7 +104,10 @@ let app = new Vue({
 
       this.client.on("stream-removed", ({ stream }) => {
         // console.log(String(stream.getId()));
+        stream.stop();
         stream.close();
+
+        this.removeStream(stream.getId());
       });
 
       this.client.on("peer-online", (evt) => {
@@ -101,6 +118,8 @@ let app = new Vue({
         var uid = evt.uid;
         var reason = evt.reason;
         console.log("remote user left ", uid, "reason: ", reason);
+
+        this.removeStream(uid);
       });
 
       this.client.on("stream-unpublished", (evt) => {
@@ -114,6 +133,7 @@ let app = new Vue({
         video: true,
       });
 
+      this.localStream.setVideoProfile("480p_1");
       // Initialize the local stream
       this.localStream.init(
         () => {
@@ -128,6 +148,15 @@ let app = new Vue({
           console.log(err);
         }
       );
+    },
+
+    removeStream(streamId) {
+      console.log("removeStream was executed");
+      let removedStreamIndex = this.remoteStreamIds.findIndex(
+        (id) => id === streamId
+      );
+      // remove streamId from list and clear black screen from DOM
+      this.remoteStreamIds.splice(removedStreamIndex, 1);
     },
 
     endCall() {

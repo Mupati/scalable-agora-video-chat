@@ -65,11 +65,16 @@ main {
   height: 100%;
   margin: 10px 2rem;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
   grid-gap: 2px;
-  background-color: #485057;
 }
 
 .grid-item {
-  height: 200px;
+  height: 20rem;
+}
+
+@media only screen and (max-width: 768px) {
+  #callersList {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
 }
