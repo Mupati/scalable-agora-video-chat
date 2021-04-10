@@ -107,6 +107,7 @@
           <div
             v-for="remoteId in remoteStreamIds"
             :id="'agora_remote_'+remoteId"
+            :key="remoteId"
             class="grid-item"
           ></div>
         </section>

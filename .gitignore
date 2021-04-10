@@ -2,3 +2,4 @@ node_modules
 *.txt
 functions
 .netlify
+agora_test.vue
