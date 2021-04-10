@@ -151,12 +151,17 @@ let app = new Vue({
     },
 
     removeStream(streamId) {
-      console.log("removeStream was executed");
-      let removedStreamIndex = this.remoteStreamIds.findIndex(
-        (id) => id === streamId
-      );
-      // remove streamId from list and clear black screen from DOM
-      this.remoteStreamIds.splice(removedStreamIndex, 1);
+      // console.log("removeStream was executed");
+      // let removedStreamIndex = this.remoteStreamIds.findIndex(
+      //   (id) => id === streamId
+      // );
+      // // remove streamId from list and clear black screen from DOM
+      // this.remoteStreamIds.splice(removedStreamIndex, 1);
+
+      this.remoteStreamIds = this.remoteStreamIds.filter((id, index) => {
+        if (streamId == id) return false;
+        return true;
+      });
     },
 
     endCall() {
